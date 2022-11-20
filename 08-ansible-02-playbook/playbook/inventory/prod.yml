@@ -2,4 +2,5 @@
 clickhouse:
   hosts:
     clickhouse-01:
-      ansible_host: <IP_here>
+      ansible_host: 44.201.126.155
+      ansible_ssh_user: ec2-user
