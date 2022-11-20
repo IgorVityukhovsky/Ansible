@@ -42,30 +42,27 @@ cd git
 ```
 
 Подготовка Git
-
+```
 git config --global init.defaultBranch main && git config --global user.name "IgorVityukhovsky" && git config --global user.email relixinus@mail.ru
 git init
 git remote add origin https://github.com/IgorVityukhovsky/Ansible.git
 git pull origin main
 git clone https://github.com/IgorVityukhovsky/Ansible.git
+```
 
-
-Делаю тестовые изменения в любом файле.
-Проверяю
-
+Делаю тестовые изменения в любом файле.  
+Проверяю  
+```
 git status
 git add *
 git commit -m "тестовое изменение"
 git push --set-upstream origin main
 Username for 'https://github.com': *ввожу свои данные*
 Password for 'https://IgorVityukhovsky@github.com': *вставляю токен*
-
-Всё работает.
-
-
+```
+Всё работает.  
 В дальнейшем я буду делать это одной командой:
-
-
+```
 sudo apt update && sudo apt install ansible -y &&  /
 mkdir git && cd git &&  /
 git config --global init.defaultBranch main &&  /
@@ -79,24 +76,24 @@ echo "test string" >> /home/ubuntu/git/08-ansible-02-playbook/README.md && /
 git status && git add * &&  /
 git commit -m "тестовое изменение" &&  /
 git push --set-upstream origin main
+```
 
-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
+## Выполнение ДЗ
 
+Скопировал закрытый ключ Admin.pem на машину, дал права 600.  
+Создал второй инстанс на red hat.  
+Отредактировал prod.yml добавив IP нового инстанса, так же добавил
+```
+ansible_ssh_user: ec2-user
+```
+Изменил плейбук site.yml так как исходник не рабочий:
 
-Можно приступать к выполнению ДЗ.
+Отключил проверку GPG.  
+Добавил принудительный вызов хендлера там, где он нам нужен, а не после выполнения всех тасков.  
+Добавил двухсекундную паузу после перезапуска службы, иначе базы данных не создаются при первом запуске плейбука.  
+В результате привёл к виду:  
 
-Скопировал закрытый ключ Admin.pem на машину, дал права 600.
-Создал второй инстанс на red hat.
-Отредактировал prod.yml добавив IP нового инстанса, добавил ansible_ssh_user: ec2-user
-
-Изменил плейбук site.yml так как исходник не рабочий.
-
-Отключил проверку GPG.
-Добавил принудительный вызов хендлера там, где он нам нужен, а не после выполнения всех тасков.
-Добавил двухсекундную паузу после перезапуска службы, иначе базы данных не создаются при первом запуске плейбука
-В результате привёл к виду:
-
----
+```
 ---
 - name: Install Clickhouse
   hosts: clickhouse
@@ -137,46 +134,47 @@ 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
       register: create_db
       failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
-
-
-
-
-Запускаю плейбук с ключем private-key
-
+```
+Запускаю плейбук с ключем private-key, что бы сработало ssh соединение
+```
 cd /home/ubuntu/git/08-ansible-02-playbook/playbook/
-
-ansible-playbook site.yml -i inventory/prod.yml --private-key ~/.ssh/Admin.pem --check
-
-Всё отработало успешно.
+ansible-playbook site.yml -i inventory/prod.yml --private-key ~/.ssh/Admin.pem
+```
+Всё отработало успешно.  
 Зайдём на машину и проверим
-
+```
 clickhouse-client
+```
+```
 ClickHouse client version 22.3.3.44 (official build).
 Connecting to localhost:9000 as user default.
 Connected to ClickHouse server version 22.3.3 revision 54455.
 
 ip-172-31-94-75.ec2.internal :)
-
+```
+Установим ansible-lint и проверим наш плейбук
+```
 sudo apt install ansible-lint
-
 ansible-lint site.yml
-
+```
+```
 WARNING  Overriding detected file kind 'yaml' with 'playbook' for given positional argument: site.yml
-
-На сколько понял ansible-lint определил, что наш site.yml является плейбуком.
-
+```
+На сколько я понял ansible-lint определил, что наш site.yml является плейбуком.
+```
 ansible-playbook site.yml -i inventory/prod.yml --private-key ~/.ssh/Admin.pem --check
-
-Запуск выдал ошибку на этапе установке пакета. Вероятно потому, что ничего не скачал, а значит и проверить не смог.
-
+```
+Запуск выдал ошибку на этапе установке пакета. Вероятно потому, что ничего не скачал, а значит и устанавливать нечего.
+```
 ansible-playbook site.yml -i inventory/prod.yml --private-key ~/.ssh/Admin.pem --diff
-
+```
+```
 PLAY RECAP ***********************************************************************************************************************************
 clickhouse-01              : ok=7    changed=2    unreachable=0    failed=0    skipped=0    rescued=1    ignored=0
-
-Запуск с ключем --check после этого прошел успешно.
-
+```
+Запуск с ключем --check после этого прошел успешно.  
 Повторный запуск с ключом --diff успешен, плейбук индепотентен
-
+```
 PLAY RECAP ***********************************************************************************************************************************
 clickhouse-01              : ok=7    changed=0    unreachable=0    failed=0    skipped=0    rescued=1    ignored=0
+```
