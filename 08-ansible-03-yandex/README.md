@@ -26,3 +26,33 @@
 Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
 
 ---
+
+### Ответ
+
+Создал несколько виртуальных хостов, подправил инвентаризационный файл, плейбук дополнил
+
+```
+- name: Install Lighthouse
+  hosts: lighthouse_UBUNTU
+  tasks:
+    - name: Update apt-get repo and cache
+      become: true
+      apt: update_cache=yes force_apt_get=yes
+
+    - name: Install nginx
+      become: true
+      ansible.builtin.apt:
+        name: nginx
+
+    - name: Clone a github repository
+      git:
+        repo: https://github.com/VKCOM/lighthouse.git
+        dest: /home/ubuntu/git
+        clone: yes
+        update: yes
+    
+    - name: copy files
+      become: true
+      command: cp /home/ubuntu/git/. /var/www/html/ -r
+```
+Всё проходит успешно, веб интерфейс открывается
