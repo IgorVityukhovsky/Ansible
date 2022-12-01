@@ -82,6 +82,26 @@ ansible-galaxy role init vector-role
 
 Повторил тоже самое для роли lighthouse-role
 
+Выложил все roles в репозитории. Проставил тэги, используя семантическую нумерацию 1.0.0  
+Добавил roles в `requirements.yml` в playbook.
+Он стал вида:
 
 
+  ```yaml
+---
+- src: git@github.com:AlexeySetevoi/ansible-clickhouse.git
+  scm: git
+  version: '1.11.0'
+  name: clickhouse
 
+- src: git@github.com:IgorVityukhovsky/lighthouse-role.git
+  scm: git
+  version: '1.0.0'
+  name: lighthouse-role
+
+- src: git@github.com:IgorVityukhovsky/vector-role.git
+  scm: git
+  version: '1.0.0'
+  name: vector-role
+
+   ```
