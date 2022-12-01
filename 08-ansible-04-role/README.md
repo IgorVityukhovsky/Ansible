@@ -46,7 +46,41 @@ IgorVityukhovsky/lighthouse-role
 
 Добавил публичную часть своего ключа к своему профилю в github.  
 
+Ставить опыты я буду на инфраструктуре, которую буду разворачивать с помощью Терраформ.  
+Поэтому прикладываю и его настройки тоже.
 
+Создал файл `requirements.yml` и наполнил содержимым
+
+  ```yaml
+   ---
+     - src: git@github.com:AlexeySetevoi/ansible-clickhouse.git
+       scm: git
+       version: "1.11.0"
+       name: clickhouse 
+   ```
+   
+Установить
+```
+ansible-galaxy install -r requirements.yml -p ./roles
+```
+```
+Starting galaxy role install process
+- extracting clickhouse to /Users/igorvityukhovsky/Git/08-ansible-04-role/playbook/roles/clickhouse
+clickhouse (1.11.0) was installed successfully
+
+```
+Перейдём в каталог с ролями и инициируем создание новой роли
+```
+cd roles
+ansible-galaxy role init vector-role
+```
+```
+- Role vector-role was created successfully
+```
+Распределил таски и переменные по каталогам новой роли.
+Таски теперь содержат переменные, которые в свою очередь ссылаются на дефолты.
+
+Повторил тоже самое для роли lighthouse-role
 
 
 
