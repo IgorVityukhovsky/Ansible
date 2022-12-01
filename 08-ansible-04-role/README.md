@@ -82,7 +82,8 @@ ansible-galaxy role init vector-role
 
 Повторил тоже самое для роли lighthouse-role
 
-Выложил все roles в репозитории. Проставил тэги, используя семантическую нумерацию 1.0.0  
+Выложил все roles в репозитории. Проставил тэги, используя семантическую нумерацию 1.0.0
+
 Добавил roles в `requirements.yml` в playbook.  
 Привёл к виду:
 
@@ -105,6 +106,10 @@ ansible-galaxy role init vector-role
   name: vector-role
 
    ```
+Если бы у нас не было этих ролей, их можно было бы установить той же командой
+```
+ansible-galaxy install -r requirements.yml -p ./roles
+```
 
 Плейбук привёл к виду:
 
@@ -131,4 +136,18 @@ ansible-galaxy role init vector-role
   hosts: lighthouse_UBUNTU
   roles:
     - role: lighthouse-role
+```
+
+
+После создания инфраструктуры запускаем ансибл подставив сгенерированный терраформом инвентори файл
+
+```
+ansible-playbook site.yml -i /$HOME/terraform/inventary.yml
+```
+Всё прошло успешно
+```
+PLAY RECAP *******************************************************************************
+clickhouse_RHEL            : ok=25   changed=0    unreachable=0    failed=0    skipped=10   rescued=0    ignored=0   
+lighthouse_UBUNTU          : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+vector_RHEL                : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
